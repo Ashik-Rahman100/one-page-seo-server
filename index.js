@@ -31,10 +31,10 @@ const upload = multer({ storage:storage });
 // app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Route for file uploads
-app.post('/upload',upload.single("files"), (req, res) => {
+app.post('/upload',upload.single("files"), async(req, res) => {
 // app.post('/upload', upload.array('files'), (req, res) => {
     console.log(req.file);
-    UserModel.create({image:req.file.filename})
+    await UserModel.create({image:req.file.filename})
     .then(result => res.json(result))
     .catch(err=> console.log(err))
 
@@ -46,10 +46,15 @@ app.post('/upload',upload.single("files"), (req, res) => {
 });
 
 // get image data
-app.get('/getImages', (req,res) => {
-    UserModel.find()
+app.get('/getImages', async(req,res) => {
+    await UserModel.find({})
     .then(users => res.json(users))
     .catch(err => res.json(err))
+});
+
+
+app.get('/', (req, res) => {
+    res.json({message: "Server is running"})
 })
 
 // Start the server
